@@ -2,8 +2,10 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Noże</title>
+
+  <!-- RESPONSYWNOŚĆ -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     body {
@@ -11,23 +13,55 @@
       margin: 20px;
     }
 
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    /* KONTENER (scroll jak aplikacja) */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
     table {
       border-collapse: collapse;
       width: 100%;
+      min-width: 600px;
     }
 
     td, th {
       border: 1px solid #ccc;
-      padding: 8px;
+      padding: 10px;
+      font-size: clamp(14px, 2vw, 18px);
+      white-space: nowrap;
     }
 
     th {
+      position: sticky;
+      top: 0;
       background: #f5f5f5;
+      z-index: 2;
+    }
+
+    tr:nth-child(even) {
+      background: #fafafa;
+    }
+
+    tr:hover {
+      background: #f0f0f0;
+    }
+
+    /* MINIATURKI */
+    td.images {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
     }
 
     img.thumb {
-      width: 80px;
-      height: 80px;
+      width: clamp(50px, 8vw, 80px);
+      height: clamp(50px, 8vw, 80px);
       object-fit: cover;
       border-radius: 6px;
       cursor: pointer;
@@ -36,12 +70,6 @@
 
     img.thumb:hover {
       transform: scale(1.1);
-    }
-
-    td.images {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
     }
 
     /* LIGHTBOX */
@@ -72,46 +100,12 @@
       color: white;
       cursor: pointer;
     }
-    .table-container {
-      width: 100%;
-      overflow-x: auto;        /* scroll poziomy */
-      -webkit-overflow-scrolling: touch;
-    }
-
-    /* tabela */
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      min-width: 600px; /* minimalna szerokość */
-    }
-
-    /* komórki */
-    td, th {
-      border: 1px solid #ccc;
-      padding: 10px;
-      font-size: clamp(14px, 2vw, 18px); /* 🔥 dynamiczna czcionka */
-      white-space: nowrap; /* nie łam tekstu */
-    }
-
-    /* nagłówek przyklejony */
-    th {
-      position: sticky;
-      top: 0;
-      background: #f5f5f5;
-      z-index: 2;
-    }
-
-    /* miniaturki responsywne */
-    img.thumb {
-      width: clamp(50px, 8vw, 80px);
-      height: clamp(50px, 8vw, 80px);
-    }
   </style>
 </head>
 
 <body>
 
-<h1>Noże</h1>
+<h1>Tabela</h1>
 
 <div class="table-container">
   <table id="tabela"></table>
@@ -126,7 +120,7 @@
 <script>
 const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSZO3-GUWNEOAn87B-zEbtVy0SAuj3HTHHz6YOH_EwA6G0s-jkKaMRv9WAQLaTcM0dQBkANW4x3lv1l/pub?gid=94570365&single=true&output=csv";
 
-// LIGHTBOX
+/* LIGHTBOX */
 function openLightbox(src) {
   document.getElementById("lightboxImg").src = src;
   document.getElementById("lightbox").style.display = "flex";
@@ -136,7 +130,7 @@ function closeLightbox() {
   document.getElementById("lightbox").style.display = "none";
 }
 
-// POBIERANIE DANYCH
+/* POBIERANIE DANYCH */
 fetch(sheetURL)
   .then(res => res.text())
   .then(csv => {
@@ -152,7 +146,7 @@ fetch(sheetURL)
         tr.appendChild(td);
       });
 
-      // kolumna ze zdjęciami
+      /* KOLUMNA ZE ZDJĘCIAMI */
       if (i !== 0) {
         const index = row[0].trim();
         const td = document.createElement("td");
