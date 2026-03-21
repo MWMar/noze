@@ -7,7 +7,12 @@
     table { border-collapse: collapse; width: 100%; }
     td, th { border: 1px solid #ccc; padding: 8px; }
     img.thumb { width: 60px; cursor: pointer; margin: 2px; }
-    
+    td.images {
+                display: flex;
+                flex-wrap: wrap; /* zawijanie do kolejnego wiersza jeśli brak miejsca */
+                gap: 4px;        /* odstęp między miniaturami */
+              }
+
     /* modal */
     #modal {
       display: none;
@@ -55,7 +60,7 @@ fetch(sheetURL)
       if (i !== 0) {
         const index = row[0]; // numer porządkowy
         const td = document.createElement("td");
-
+        td.className = "images";
         const letters = ["", "a", "b", "c", "d", "e"];
 
         letters.forEach(l => {
