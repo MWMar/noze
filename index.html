@@ -2,6 +2,7 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Noże</title>
 
   <style>
@@ -71,6 +72,40 @@
       color: white;
       cursor: pointer;
     }
+    .table-container {
+      width: 100%;
+      overflow-x: auto;        /* scroll poziomy */
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* tabela */
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 600px; /* minimalna szerokość */
+    }
+
+    /* komórki */
+    td, th {
+      border: 1px solid #ccc;
+      padding: 10px;
+      font-size: clamp(14px, 2vw, 18px); /* 🔥 dynamiczna czcionka */
+      white-space: nowrap; /* nie łam tekstu */
+    }
+
+    /* nagłówek przyklejony */
+    th {
+      position: sticky;
+      top: 0;
+      background: #f5f5f5;
+      z-index: 2;
+    }
+
+    /* miniaturki responsywne */
+    img.thumb {
+      width: clamp(50px, 8vw, 80px);
+      height: clamp(50px, 8vw, 80px);
+    }
   </style>
 </head>
 
@@ -78,7 +113,9 @@
 
 <h1>Noże</h1>
 
-<table id="tabela"></table>
+<div class="table-container">
+  <table id="tabela"></table>
+</div>
 
 <!-- LIGHTBOX -->
 <div id="lightbox" onclick="closeLightbox()">
