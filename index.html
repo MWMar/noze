@@ -3,53 +3,107 @@
 <head>
   <meta charset="UTF-8">
   <title>Noże</title>
-  <style>
-    table { border-collapse: collapse; width: 100%; }
-    td, th { border: 1px solid #ccc; padding: 8px; }
-    img.thumb {
-                width: 60px;
-                height: 60px;
-                object-fit: cover;
-                border-radius: 6px;
-              }
-    td.images {
-                display: flex;
-                flex-wrap: wrap; /* zawijanie do kolejnego wiersza jeśli brak miejsca */
-                gap: 4px;        /* odstęp między miniaturami */
-              }
 
-    /* modal */
-    #modal {
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    td, th {
+      border: 1px solid #ccc;
+      padding: 8px;
+    }
+
+    th {
+      background: #f5f5f5;
+    }
+
+    img.thumb {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    img.thumb:hover {
+      transform: scale(1.1);
+    }
+
+    td.images {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    /* LIGHTBOX */
+    #lightbox {
       display: none;
       position: fixed;
-      top:0; left:0;
-      width:100%; height:100%;
-      background: rgba(0,0,0,0.8);
-      justify-content:center;
-      align-items:center;
+      z-index: 9999;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      justify-content: center;
+      align-items: center;
     }
-    #modal img {
+
+    #lightbox img {
       max-width: 90%;
       max-height: 90%;
+      border-radius: 8px;
+    }
+
+    #lightbox .close {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 30px;
+      color: white;
+      cursor: pointer;
     }
   </style>
 </head>
+
 <body>
 
 <h1>Tabela</h1>
+
 <table id="tabela"></table>
 
-<div id="modal" onclick="this.style.display='none'">
-  <img id="modalImg">
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="closeLightbox()">
+  <span class="close">✖</span>
+  <img id="lightboxImg">
 </div>
 
 <script>
 const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSZO3-GUWNEOAn87B-zEbtVy0SAuj3HTHHz6YOH_EwA6G0s-jkKaMRv9WAQLaTcM0dQBkANW4x3lv1l/pub?gid=94570365&single=true&output=csv";
 
+// LIGHTBOX
+function openLightbox(src) {
+  document.getElementById("lightboxImg").src = src;
+  document.getElementById("lightbox").style.display = "flex";
+}
+
+function closeLightbox() {
+  document.getElementById("lightbox").style.display = "none";
+}
+
+// POBIERANIE DANYCH
 fetch(sheetURL)
   .then(res => res.text())
   .then(csv => {
-    const rows = csv.split("\n").map(r => r.split(","));
+    const rows = csv.trim().split("\n").map(r => r.split(","));
     const table = document.getElementById("tabela");
 
     rows.forEach((row, i) => {
@@ -63,9 +117,10 @@ fetch(sheetURL)
 
       // kolumna ze zdjęciami
       if (i !== 0) {
-        const index = row[0]; // numer porządkowy
+        const index = row[0].trim();
         const td = document.createElement("td");
         td.className = "images";
+
         const letters = ["", "a", "b", "c", "d", "e"];
 
         letters.forEach(l => {
@@ -75,12 +130,9 @@ fetch(sheetURL)
           img.src = imgPath;
           img.className = "thumb";
 
-          img.onerror = () => img.remove(); // usuń jeśli nie istnieje
+          img.onerror = () => img.remove();
 
-          img.onclick = () => {
-            document.getElementById("modalImg").src = img.src;
-            document.getElementById("modal").style.display = "flex";
-          };
+          img.onclick = () => openLightbox(img.src);
 
           td.appendChild(img);
         });
